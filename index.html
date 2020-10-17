@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>XBike Tracker</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="nav">
+    <h1>XBike Tracker</h1>
+  </div>
+
+  <section class="container">
+    <div class="stats-container">
+      <div class="today item stat-item">
+        <h2>Today</h2>
+        <div class="alternate">
+          <p class="stat alternate1" id="today-distance"></p>
+          <p class="stat alternate2" id="today-speed"></p>
+        </div>
+      </div>
+
+      <div class="this-month item stat-item">
+        <h2>This month</h2>
+        <div class="alternate">
+          <p class="stat alternate1" id="month-distance">-</p>
+          <p class="stat alternate2" id="month-speed">-</p>
+        </div>
+      </div>
+      <div class="total-dist item stat-item">
+        <h2>Total distance</h2>
+        <p class="stat" id="total-distance"></p>
+      </div>
+      <div class="total-time item stat-item">
+        <h2>Total time</h2>
+        <p class="stat" id="total-time"></p>
+      </div>      
+      <div class="average-speed item stat-item">
+        <h2>Average speed</h2>
+        <p class="stat" id="average-speed">26 km/h</p>
+      </div>
+      <div class="pr item stat-item">
+        <h2>Best speed</h2>
+        <p class="stat" id="max-speed">27 km/h</p>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="bar-chart item">
+        <h2>Total distance</h2>
+        <svg 
+          version="1.1"
+          baseProfile="full"
+          xmlns="http://www.w3.org/2000/svg" 
+          id="bar">
+        </svg>
+      </div>
+
+      <div class="scatter-plot item">
+        <h2>Speed</h2>
+        <svg
+          version="1.1"
+          baseProfile="full"
+          xmlns="http://www.w3.org/2000/svg" 
+          id="scatter">
+        </svg>
+      </div>
+      <div class="pie-chart item">
+        <h2>Week days</h2>
+        <svg 
+          version="1.1"
+          baseProfile="full"
+          xmlns="http://www.w3.org/2000/svg" 
+          id="pie">
+        </svg>
+      </div>
+  </div>
+  </section>
+  <div class="tooltip"></div>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="bar.js"></script>
+  <script src="scatter.js"></script>
+  <script src="pie.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
