@@ -149,3 +149,54 @@ svg, input {
     text-align: center;
   }
   
+
+  /* bar */
+
+#bar {
+    fill: var(--c-dark);
+}
+
+#bar text {
+    font-size: 12px;
+    fill: var(--c-dark);
+}
+
+#bar path {
+    stroke: gray;
+}
+
+#bar line {
+    stroke: gray;
+}
+
+#bar line#limit {
+    stroke: var(--c-accent);
+    stroke-width: 1;
+    stroke-dasharray: 3 6;
+}
+
+#bar .grid path {
+    stroke-width: 0;
+}
+
+#bar .grid .tick line {
+    stroke: #9FAAAE;
+    stroke-opacity: 0.3;
+}
+
+#bar text.divergence {
+    font-size: 14px;
+    fill: var(--c-light);
+}
+
+#bar text.value {
+    font-size: 14px;
+    fill: var(--c-light);
+}
+
+
+text.label {
+font-size: 14px;
+font-weight: 400;
+}
+

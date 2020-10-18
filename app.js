@@ -2,6 +2,19 @@ var today = new Date();
 
 //var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 var orderedWeekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+var month = new Array();
+month[0] = "January";
+month[1] = "February";
+month[2] = "March";
+month[3] = "April";
+month[4] = "May";
+month[5] = "June";
+month[6] = "July";
+month[7] = "August";
+month[8] = "September";
+month[9] = "October";
+month[10] = "November";
+month[11] = "December";
 
 d3.csv("./exercise_data.csv", function(row, i, headers) {
     // formatter function
@@ -9,7 +22,8 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
     var ymd = "20" + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
     var dmy = splitDate[0] + "-" + splitDate[1] + "-" + "20" + splitDate[2];
     var date = new Date(ymd);
-    var month = date.getMonth(); 
+    var monthNum = date.getMonth();
+    var monthYear = month[monthNum].toUpperCase().substr(0,3) + "'" + date.getFullYear().toString().substr(2,4);
     var weekday = date.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
     var speed = parseFloat((row.distance * 60) / row.duration).toFixed(2);
 
@@ -19,8 +33,9 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
         duration: +row.duration,
         distance: +row.distance,
         speed: +speed,
-        month: month,
-        weekday: weekday
+        month: month[monthNum],
+        weekday: weekday,
+        monthYear: monthYear
     };
   },
   function(error, data) {
@@ -58,10 +73,13 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
  
     /* bar */
 
-    var width = 300;
+    var width = 380;
     var height = 400;
 
-    //createBar(width, height);
+    var monthData = getDataByMonth(data);
+    console.log(monthData);
+
+    createBar(width, height, monthData);
     //drawBar(data);
 
     /* scatter */ 
