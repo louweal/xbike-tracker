@@ -93,7 +93,6 @@ function drawPie(data) {
 }
 
 function setTextColor(d) {
-  var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 
   if (todayDay === d.data.day) {
     return `rgba(255, 217, 0, 1)`

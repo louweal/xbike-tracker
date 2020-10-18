@@ -62,8 +62,8 @@ function createBar(width, height, data) {
     .append('rect')
     .attr('class', 'bar')
     .attr('x', (g) => xScale(g.month))
-    .attr('y', (g) => yScale(g.distance))
-    .attr('height', (g) => height - yScale(g.distance))
+    .attr('y', height)
+    .attr('height', 0)
     .attr('width', xScale.bandwidth())
     .on('mouseenter', function (actual, i) {
       d3.selectAll('.value')
@@ -116,15 +116,24 @@ function createBar(width, height, data) {
       chart.selectAll('#limit').remove()
       chart.selectAll('.divergence').remove()
     })
+    .transition()
+    .duration(1000)
+    .attr('y', (g) => yScale(g.distance))
+    .attr('height', (g) => height - yScale(g.distance))
+
 
   barGroups 
     .append('text')
     .attr('class', 'value')
     .attr('x', (a) => xScale(a.month) + xScale.bandwidth() / 2)
-    .attr('y', (a) => yScale(a.distance) + 30)
+    .attr('y', height)
     .attr('text-anchor', 'middle')
     .attr('fill', 'var(--c-light)')
-    .text((a) => `${parseFloat(a.distance).toFixed(0)}`)
+    .text("")
+    .transition()
+    .duration(1000)
+      .attr('y', (a) => yScale(a.distance) + 30)
+     .text((a) => `${parseFloat(a.distance).toFixed(0)}`)
 }
 
 function drawBar(data) {

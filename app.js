@@ -1,4 +1,5 @@
 var today = new Date();
+var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 
 //var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 var orderedWeekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -45,7 +46,7 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
 
     var lastrow = data[data.length-1];
 
-    if(lastrow.date === today) {
+    if(lastrow.date.setHours(0,0,0,0) === today.setHours(0,0,0,0)) {
         d3.select("#today-distance").text(lastrow.distance + " km");
         d3.select("#today-speed").text(lastrow.speed + " km/h");
     } 
