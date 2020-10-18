@@ -73,7 +73,7 @@ h2 {
 .stat {
     font-weight: 800;
     color: var(--c-dark);
-    font-size: 2.5em;
+    font-size: 2.3em;
 }
 
 .alternate1 {
@@ -104,29 +104,31 @@ svg, input {
 } 
 
 .line {
-    fill: none;
-    stroke: #ffab00;
+    fill: blue;
     stroke-width: 3;
 }
 
 .axis path, .axis line {
-    fill: none;
-    stroke: navajowhite;
+    fill: blue;
     shape-rendering: crispEdges;
 }
 
 .axis text {
-    font-size: 10px;
+    font-size: 14px;
 }
-
-
-@keyframes changeFill { to {fill: yellow}}
 
 /* line / scatter plot */
 
-.tick line {
+
+.y-axis line, .y-axis path {
     stroke: var(--c-dark);
     opacity: 0.25;
+    shape-rendering: crispEdges;
+}
+
+.y-axis text {
+    fill: var(--c-dark);
+    font-size: 15px;
 }
 
 .tooltip {

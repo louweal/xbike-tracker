@@ -1,30 +1,30 @@
 var today = new Date();
 
-// pie:
-var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
+//var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 var orderedWeekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-
-
 
 d3.csv("./exercise_data.csv", function(row, i, headers) {
     // formatter function
     var splitDate = row.day.split("/")
     var ymd = "20" + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
     var dmy = splitDate[0] + "-" + splitDate[1] + "-" + "20" + splitDate[2];
+    var date = new Date(ymd);
+    var month = date.getMonth(); 
+    var weekday = date.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
+    var speed = parseFloat((row.distance * 60) / row.duration).toFixed(2);
+
     return {
         day: dmy,
-        date: new Date(ymd),
+        date: date,
         duration: +row.duration,
-        distance: +row.distance
+        distance: +row.distance,
+        speed: +speed,
+        month: month,
+        weekday: weekday
     };
   },
   function(error, data) {
     if(error) throw error;
-
-    // todo: remove ALL duplication !!!!!!!!!!!!!!!!!!!!!
-    data.forEach(function(row) {
-        row["speed"] = parseFloat((row.distance * 60) / row.duration).toFixed(2);
-    });
 
     /* stats */ 
 
@@ -50,23 +50,42 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
     var averageSpeed = parseFloat(d3.mean(data, d => d.speed)).toFixed(2);
     d3.select("#average-speed").text(averageSpeed + " km/h");
 
-    var maxSpeed = (d3.max(data, d => d.speed));
+    var maxDistance = d3.max(data, d => d.distance);
+    d3.select("#longest-distance").text(maxDistance + " km");
+
+    var maxSpeed = d3.max(data, d => d.speed);
     d3.select("#max-speed").text(maxSpeed + " km/h");
  
+    /* bar */
+
+    var width = 300;
+    var height = 400;
+
+    //createBar(width, height);
+    //drawBar(data);
+
+    /* scatter */ 
+
+    width = 790;
+    height = 400;
+
+    createScatter(width, height);
+    drawScatter(data);
+
     /* pie */ 
 
-    var width = 400;
-    var height = 400;
-  
-    data.forEach(function(row) {
-      row['weekday'] = row.date.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
-    })
-  
+    width = 400;
+    height = 400;
+   
     var weekData = getDataByWeekday(data);
-    
+
+    weekData.forEach(function(row) {
+      row["percentage"] = parseFloat(100 * row.distance / totalDistance).toFixed(0);
+    })
+
     createPie(width, height);
     drawPie(weekData);
     
-    /* end of pie */
+
 
   });

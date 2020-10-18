@@ -1,59 +1,51 @@
-var width = 800;
-var height = 600;
-var padding = 50;
-var barPadding = 1;
-var data = myData;
-var initialBinCount = 4;
 
-data.forEach(function(row) {
-    row["speed"] = (row.distance * 60) / row.duration;
-});
+function createBar(width, height) {
+  var padding = 50;
 
-var svg = d3.select("svg")
-              .attr("width", width)
-              .attr("height", height);
+  var bar = d3.select("#bar")
+  .attr("width", width)
+  .attr("height", height);
 
-d3.select("input")
-    .property("value", initialBinCount)
-  .on("input", function() {
-    updateRects(+d3.event.target.value);
-  });
+  bar.append("g")
+  .attr("transform", "translate(0," + (height - padding) + ")")
+  .classed("x-axis", true);
 
-svg.append("g")
-    .attr("transform", "translate(0," + (height - padding) + ")")
-    .classed("x-axis", true);
+  bar.append("g")
+  .attr("transform", "translate(" + padding + ", 0)")
+  .classed("y-axis", true);
 
-svg.append("g")
-    .attr("transform", "translate(" + padding + ", 0)")
-    .classed("y-axis", true);
+  bar.append("text")
+  .attr("x", width / 2)
+  .attr("y", height - 10)
+  .style("text-anchor", "middle")
+  .text("Speed (km/h)");
 
-svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - 10)
-    .style("text-anchor", "middle")
-    .text("Speed (km/h)");
+  bar.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("x", - height / 2)
+  .attr("y", 15)
+  .style("text-anchor", "middle")
+  .text("Frequency");
 
-svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", - height / 2)
-    .attr("y", 15)
-    .style("text-anchor", "middle")
-    .text("Frequency");
+  // title
+  bar.append("text")
+  .attr("x", width / 2)
+  .attr("dy", "1em")
+  .style("text-anchor", "middle")
+  .style("font-size", "1.4em")
+  .text("Histogram");
+}
 
-// title
-svg.append("text")
-    .attr("x", width / 2)
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .style("font-size", "1.4em")
-    .text("Histogram");
+function drawBar(data) {
+  var initialBinCount = 4;  
+
+  updateRects(initialBinCount, data);
+}
 
 
-updateRects(initialBinCount);
+function updateRects(val, data) {
+  var barPadding = 1;
 
-
-
-function updateRects(val) {
   var xScale = d3.scaleLinear()
                  .domain(d3.extent(data, d => d.speed))
                  .rangeRound([padding, width - padding]);
@@ -64,6 +56,8 @@ function updateRects(val) {
                     .value(d => d.speed);
 
   var bins = histogram(data);
+
+  console.log(bins);
 
   var yScale = d3.scaleLinear()
                  .domain([0, d3.max(bins, d => d.length)])
@@ -81,7 +75,7 @@ function updateRects(val) {
       .attr("transform", "rotate(90)")
       .style("text-anchor", "start");
 
-  var rect = svg
+  var rect = bar
                .selectAll("rect")
                .data(bins);
 

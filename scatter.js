@@ -1,53 +1,43 @@
 
-
-d3.csv("./exercise_data.csv", function(row, i, headers) {
-    // formatter function
-    var splitDate = row.day.split("/")
-    var ymd = "20" + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
-    var dmy = splitDate[0] + "-" + splitDate[1] + "-" + "20" + splitDate[2];
-    return {
-        day: dmy,
-        date: new Date(ymd),
-        duration: +row.duration,
-        distance: +row.distance
-    };
-},
-function(error, data) {
-    if(error) throw error;
-
-    data.forEach(function(row) {
-        row["speed"] = parseFloat((row.distance * 60) / row.duration).toFixed(2);
-    });
-
-    var width = 750;
-    var height = 400;
-    var padding = 50;
-
-    var xScale = d3.scaleLinear()
-               .domain(d3.extent(data, d => d.date))
-               .range([padding, width - padding]);
-
-    var yScale = d3.scaleLinear()
-                .domain([15, 35]) // d3.max(data, d => d.speed)
-                .range([height - padding, padding]);
-
-
-    var yAxis = d3.axisLeft(yScale)
-                .tickSize(- width + 2 * padding)
-                .tickSizeOuter(0);
+function createScatter(width, height) {
 
     var scatter = d3.select("#scatter")
                 .attr("width", width)
                 .attr("height", height);
 
-    var tooltip = d3.select("body")
-                    .append("div")
-                    .classed("tooltip", true);
-
     scatter.append("g")
+        .classed("y-axis", true);                
+
+    d3.select(".scatter-plot")
+        .append("div")
+        .classed("tooltip", true);       
+}
+
+function drawScatter(data) {
+    var scatter = d3.select("#scatter");
+    var padding = 50; 
+    var width = +scatter.attr("width")
+    var height = +scatter.attr("height")
+
+    var xScale = d3.scaleLinear()
+               .domain(d3.extent(data, d => d.date))
+               .nice()
+               .range([padding, width - padding]);
+
+    var yScale = d3.scaleLinear()
+               .domain([18, 32]) // d3.max(data, d => d.speed)
+               .nice()
+               .range([height - padding, padding]);
+
+
+   var yAxis = d3.axisLeft(yScale)
+               .tickSize(-width + 2 * padding)
+               .tickSizeOuter(1);
+
+    d3.select(".y-axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
-
+                     
     scatter
     .selectAll("circle")
     .data(data)
@@ -57,13 +47,13 @@ function(error, data) {
         .attr("cy", d => yScale(d.speed))
         .attr("r", "0")
         .attr("opacity", "0.1")
-        .attr("fill", "var(--c-dark)")
-        .attr("stroke", "var(--c-medium)")
-        .on("mousemove", showTooltip)
-        .on("mouseout", hideTooltip)
+        .attr("fill", d => setScatterColor(data, d.speed))
+        //.attr("stroke", "var(--c-medium)")
+        .on("mousemove", showScatterTooltip)
+        .on("mouseout", hideScatterTooltip)
         .transition()
-        .delay((d,i) => 150*i)
-        .duration(150)
+        .delay((d,i) => 100*i)
+        .duration(100)
         .ease(d3.easeCubicOut)
         .attr("opacity", "1")
         .attr("r", "6");
@@ -82,14 +72,17 @@ function(error, data) {
     */
 
     // y-axis label
-    scatter.append("text")
+    /*scatter.append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", - height / 2)
         .attr("dy", padding / 2)
         .style("text-anchor", "middle")
-        .text("Speed (km/h)");
-            
-   function showTooltip(d) {
+        .text("Speed (km/h)"); */
+}
+
+function showScatterTooltip(d) {
+    var tooltip = d3.select(".tooltip"); 
+
     tooltip
         .style("opacity", "1")
         .style("left", (d3.event.x - tooltip.node().offsetWidth / 2) + "px")
@@ -100,13 +93,17 @@ function(error, data) {
                 <p>Speed: ${d.speed} km/h</p>`);
 }
 
-    function hideTooltip(d) {
-        tooltip
-            .style("opacity", "0")
+function hideScatterTooltip(d) {
+    var tooltip = d3.select(".tooltip"); 
+
+    tooltip
+        .style("opacity", "0")
+}
+
+function setScatterColor(data, s) {
+    var bestSpeed = d3.max(data, d => d.speed);
+    if(s !== bestSpeed) {
+        return "var(--c-dark)";
     }
-})
-
-
-
-
-
+    return "var(--c-accent)"
+}

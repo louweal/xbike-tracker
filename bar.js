@@ -1,66 +1,72 @@
-var width = 800;
-var height = 600;
-var padding = 50;
-var barPadding = 1;
-var initialBinCount = 4;
 
-data.forEach(function(row) {
-    row["speed"] = (row.distance * 60) / row.duration;
-});
+function createBar(width, height) {
+  var padding = 50;
 
-var bar = d3.select("#bar")
-              .attr("width", width)
-              .attr("height", height);
+  var bar = d3.select("#bar")
+  .attr("width", width)
+  .attr("height", height);
 
-d3.select("input")
-    .property("value", initialBinCount)
-  .on("input", function() {
-    updateRects(+d3.event.target.value);
-  });
+  bar.append("g")
+  .attr("transform", "translate(0," + (height - padding) + ")")
+  .classed("bar-x-axis", true);
 
-bar.append("g")
-    .attr("transform", "translate(0," + (height - padding) + ")")
-    .classed("x-axis", true);
+  bar.append("g")
+  .attr("transform", "translate(" + padding + ", 0)")
+  .classed("bar-y-axis", true);
 
-bar.append("g")
-    .attr("transform", "translate(" + padding + ", 0)")
-    .classed("y-axis", true);
+  bar.append("text")
+  .attr("x", width / 2)
+  .attr("y", height - 10)
+  .style("text-anchor", "middle")
+  .text("Month");
 
-bar.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - 10)
-    .style("text-anchor", "middle")
-    .text("Speed (km/h)");
+  bar.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("x", - height / 2)
+  .attr("y", 15)
+  .style("text-anchor", "middle")
+  .text("Distance");
 
-bar.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", - height / 2)
-    .attr("y", 15)
-    .style("text-anchor", "middle")
-    .text("Frequency");
+}
 
-// title
-bar.append("text")
-    .attr("x", width / 2)
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .style("font-size", "1.4em")
-    .text("Histogram");
+function drawBar(data) {
+  var initialBinCount = 4;  
+
+  updateRects(initialBinCount, data);
+}
 
 
-updateRects(initialBinCount);
+function updateRects(val, data) {
+  var barPadding = 1;
+  var padding = 50;
 
+  var bar = d3.select("#bar");
 
+  var width = +bar.attr("width");
+  var height = +bar.attr("height");
 
-function updateRects(val) {
+  /*
   var xScale = d3.scaleLinear()
-                 .domain(d3.extent(data, d => d.speed))
+                 .domain(d3.extent(data, d => d.distance))
                  .rangeRound([padding, width - padding]);
+
+  */
+
+  var xScale = d3.scaleTime().range([0, width]);
+ 
+  // Determine the first and list dates in the data set
+  var monthExtent = d3.extent(data, function(d) { return d.date; });
+
+  // Create one bin per month, use an offset to include the first and last months
+  var monthBins = d3.timeMonths(d3.timeMonth.offset(monthExtent[0],-1),
+                                  d3.timeMonth.offset(monthExtent[1],1));                 
+
+  console.log(monthBins);
 
   var histogram = d3.histogram()
                     .domain(xScale.domain())
                     .thresholds(xScale.ticks(val))
-                    .value(d => d.speed);
+                    .value(d => d.distance);
 
   var bins = histogram(data);
 
@@ -68,10 +74,10 @@ function updateRects(val) {
                  .domain([0, d3.max(bins, d => d.length)])
                  .range([height - padding, padding]);
   
-  d3.select(".y-axis")
+  d3.select(".bar-y-axis")
       .call(d3.axisLeft(yScale));
 
-  d3.select(".x-axis")
+  d3.select(".bar-x-axis")
       .call(d3.axisBottom(xScale)
               .ticks(val))
     .selectAll("text")
@@ -102,6 +108,5 @@ function updateRects(val) {
         .attr("y", d => yScale(d.length))
         .attr("height", d => height - padding - yScale(d.length))
 
-  d3.select(".bin-count")
-      .text("Number of bins: " + bins.length);
+
 }
