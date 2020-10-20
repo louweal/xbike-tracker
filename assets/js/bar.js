@@ -1,17 +1,18 @@
 
-function createBar(width, height, data) {
+function drawBar(width, height, data) {
 
   var maxDistance = d3.max(data, d => d.distance);
 
-  const svg = d3.select('#bar')
+  const bar = d3.select('#bar')
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr("viewBox", `0 0 ${width} ${height}`);
     
   const margin = 30;
   width = width - 2 * margin;
   height = height - 2 * margin;
 
-  const chart = svg.append('g')
+  const chart = bar.append('g')
     .attr('transform', `translate(${margin}, ${margin})`);
 
     const xScale = d3.scaleBand()
@@ -23,28 +24,16 @@ function createBar(width, height, data) {
     .range([height, 0])
     .domain([0, maxDistance + 10]);
 
-  // vertical grid lines
-  // const makeXLines = () => d3.axisBottom()
-  //   .scale(xScale)
-
   const makeYLines = () => d3.axisLeft()
     .scale(yScale)
 
+    
   chart.append('g')
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(xScale));
 
   chart.append('g')
     .call(d3.axisLeft(yScale));
-
-  // vertical grid lines
-  // chart.append('g')
-  //   .attr('class', 'grid')
-  //   .attr('transform', `translate(0, ${height})`)
-  //   .call(makeXLines()
-  //     .tickSize(-height, 0, 0)
-  //     .tickFormat('')
-  //   )
 
   chart.append('g')
     .attr('class', 'grid')
@@ -73,8 +62,6 @@ function createBar(width, height, data) {
         .transition()
         .duration(300)
         .attr('opacity', 0.6)
-        //.attr('x', (a) => xScale(a.month) - 5)
-        //.attr('width', xScale.bandwidth() + 10)
 
       const y = yScale(actual.distance)
 
@@ -92,7 +79,7 @@ function createBar(width, height, data) {
         .attr('fill', 'white')
         .attr('text-anchor', 'middle')
         .text((a, idx) => {
-          const divergence = (a.distance - actual.distance).toFixed(1)
+          const divergence = -(100 - (100 * a.distance) / actual.distance).toFixed(0)
           
           let text = ''
           if (divergence > 0) text += '+'
@@ -116,7 +103,7 @@ function createBar(width, height, data) {
       chart.selectAll('#limit').remove()
       chart.selectAll('.divergence').remove()
     })
-    .transition()
+    .transition("growBars")
     .duration(1000)
     .attr('y', (g) => yScale(g.distance))
     .attr('height', (g) => height - yScale(g.distance))
@@ -126,26 +113,26 @@ function createBar(width, height, data) {
     .append('text')
     .attr('class', 'value')
     .attr('x', (a) => xScale(a.month) + xScale.bandwidth() / 2)
-    .attr('y', height)
+    .attr('y', (a) => yScale(a.distance) + 30)
+    .attr('opacity', '0')
     .attr('text-anchor', 'middle')
     .attr('fill', 'var(--c-light)')
     .text("")
     .transition()
-    .duration(1000)
-      .attr('y', (a) => yScale(a.distance) + 30)
+    .duration(200)
+    .delay(750)
+      .attr('opacity', '1')
      .text((a) => `${parseFloat(a.distance).toFixed(0)}`)
 }
 
-function drawBar(data) {
-
-}
-
 function getDataByMonth(data) {
+  // list all unique months+years in dataset (e.g. JUL'20, AUG'20)
   var orderedMonths = data.map(a => a.monthYear);
-  orderedMonths = [...new Set(orderedMonths)]
+  orderedMonths = [...new Set(orderedMonths)];
 
   var monthTallies = orderedMonths.map(n => ({month: n, distance: 0}));
 
+  // sum all distances for each month
   for (var i = 0; i < data.length; i++) {      
       var row = data[i];
       var month = orderedMonths.indexOf(row.monthYear);

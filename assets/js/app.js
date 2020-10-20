@@ -1,30 +1,25 @@
 var today = new Date();
 var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 
-//var todayDay = today.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
 var orderedWeekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-var month = new Array();
-month[0] = "January";
-month[1] = "February";
-month[2] = "March";
-month[3] = "April";
-month[4] = "May";
-month[5] = "June";
-month[6] = "July";
-month[7] = "August";
-month[8] = "September";
-month[9] = "October";
-month[10] = "November";
-month[11] = "December";
+var month = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-d3.csv("./exercise_data.csv", function(row, i, headers) {
+var lastModifiedDate = "";
+var dataFile = "./data/exercise_data.csv";
+
+fetch(dataFile).then(function(response) {
+  lastModifiedDate = response.headers.get('Last-Modified').substr(5,17);
+  d3.select(".last-modified").text(lastModifiedDate) // add to DOM
+});
+
+d3.csv(dataFile, function(row, i, headers) {
     // formatter function
     var splitDate = row.day.split("/")
     var ymd = "20" + splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0];
     var dmy = splitDate[0] + "-" + splitDate[1] + "-" + "20" + splitDate[2];
     var date = new Date(ymd);
     var monthNum = date.getMonth();
-    var monthYear = month[monthNum].toUpperCase().substr(0,3) + "'" + date.getFullYear().toString().substr(2,4);
+    var monthYear = month[monthNum] + "'" + date.getFullYear().toString().substr(2,4);
     var weekday = date.toLocaleString(undefined, {weekday: 'short'}).toUpperCase();
     var speed = parseFloat((row.distance * 60) / row.duration).toFixed(2);
 
@@ -74,27 +69,16 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
  
     /* bar */
 
-    var width = 380;
-    var height = 400;
-
     var monthData = getDataByMonth(data);
-    console.log(monthData);
 
-    createBar(width, height, monthData);
-    //drawBar(data);
+    drawBar(400, 400, monthData);
 
     /* scatter */ 
 
-    width = 790;
-    height = 400;
-
-    createScatter(width, height);
+    createScatter(800, 400);
     drawScatter(data);
 
     /* pie */ 
-
-    width = 400;
-    height = 400;
    
     var weekData = getDataByWeekday(data);
 
@@ -102,9 +86,7 @@ d3.csv("./exercise_data.csv", function(row, i, headers) {
       row["percentage"] = parseFloat(100 * row.distance / totalDistance).toFixed(0);
     })
 
-    createPie(width, height);
-    drawPie(weekData);
-    
-
+    createPie(400, 400);
+    drawPie(weekData);    
 
   });

@@ -1,37 +1,18 @@
 function createPie(width, height) {
   var pie = d3.select("#pie")
               .attr("width", width)
-              .attr("height", height);
+              .attr("height", height)
+              .attr("viewBox", `0 0 ${width} ${height}`);
   
   pie
   .append("g")
       .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")")
       .classed("chart", true);
-  
-  pie
-  .append("g")
-      .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")")
-      .classed("inner-chart", true);
-  
-  pie
-  .append("text")
-      .classed("title", true)
-      .attr("x", width / 2)
-      .attr("y", 30)
-      .style("font-size", "2em")
-      .style("text-anchor", "middle");
-
-  // add tooltip div
-  d3.select(".pie-chart")
-      .append("div")
-      .classed("pie-tooltip", true);
       
   pie.append("text")
     .attr("x", width / 2)
     .attr("y", width / 2 + 10)
-    .attr("font-size", "1.9em")
-    .style("text-anchor", "middle")
-    .classed("pie-info", true);   
+    .classed("percentage", true);   
 }
 
 function drawPie(data) {
@@ -49,59 +30,70 @@ function drawPie(data) {
                 .outerRadius(width / 2.4)
                 .padAngle(0.02);
 
-
-  d3.select(".pie-info")
-      .text("");
-
   var outer = pie
                 .select(".chart")
                 .selectAll(".arc")
                 .data(arcs(data));
-
-
-  outer
-      .exit()
-      .remove();
 
   outer
     .enter()
     .append("path")
       .classed("arc", true)
       .attr("fill", (d, i) => `rgba(42, 37, 112, ${d.data.distance / maxDistancePerDay})`)
+      .attr("opacity", "0")
       .on("mousemove", showPieInfo)
       .on("mouseout", hidePieInfo)
     .merge(outer)
       .transition()
       .delay((d,i) => 160*i)
       .duration(160)
-      .attr("d", path);
+      .attr("d", path)
+      .transition()
+      .delay((d,i) => 80 + 160*i)
+      .duration(200)
+      .attr("opacity", "1");
 
   outer
     .enter()
     .append('text')
+    .classed('weekday', true)
     .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")";  })
-    .style("text-anchor", "middle")
+    .attr("opacity", "0")
     .style("fill", (d, i) => setTextColor(d))
-    .style("font-size", 17)
     .on("mousemove", showPieInfo)
     .on("mouseout", hidePieInfo)            
     .transition()
-    .delay((d,i) => 120*i)
-    .duration(120)
-    .text(function(d){ return d.data.day})
-
+      .delay((d,i) => 120*i)
+      .duration(120)
+      .text(function(d){ return d.data.day})
+    .transition()
+      .delay((d,i) => 60 + 120*i)
+      .duration(120)
+      .attr("opacity", "1")
 }
 
+// show todays weekday text gold and other weekdays white
 function setTextColor(d) {
-
-  if (todayDay === d.data.day) {
-    return `rgba(255, 217, 0, 1)`
+  if (todayDay !== d.data.day) {
+    return `rgba(255, 255, 255, 1)`
   }
-  return `rgba(255, 255, 255, 1)`
+  return `rgba(255, 217, 0, 1)`
 
 }
 
+// show percentage on mouse over
+function showPieInfo(d) {
+  d3.select(".percentage")
+      .text(d.data.percentage + "%");
+}
 
+// hide percentage on mouse out
+function hidePieInfo(d) {
+  d3.select(".percentage")
+      .text("");
+}
+
+// aggregates (sums) data by weekday
 function getDataByWeekday(data) {
 
   var weekdayTallies = orderedWeekdays.map(n => ({ day: n, distance: 0 }));
@@ -113,13 +105,3 @@ function getDataByWeekday(data) {
   }
   return weekdayTallies;
 } 
-
-function showPieInfo(d) {
-  d3.select(".pie-info")
-      .text(d.data.percentage + "%");
-}
-
-function hidePieInfo(d) {
-  d3.select(".pie-info")
-      .text("");
-}
