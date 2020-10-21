@@ -4,15 +4,10 @@
     --c-accent: #ffb700;
 }
 
-.scatter-circle {
-    stroke: var(--c-dark);
-    stroke-width: 2;
-}
-
-
 * {
     margin: 0;
     font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16px;
     box-sizing: border-box;
 }
 
@@ -55,30 +50,34 @@ a:hover { color: var(--c-accent) }
     background-color: var(--c-dark);
     color: white;
     padding: 15px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
 .chart-container, .stats-container {
     display: flex;
     flex-wrap: wrap;
-    padding: 2.2em 2em 0 2em;
+    min-width: 95%;
+    margin: 0 auto;
 }
 
 .item {
-    flex: 1 1 0;
+    flex: 1 1 1;
+    flex-grow: 1;
+    align-self: stretch;
     background-color: white;
     border-radius: 2px;
-    box-shadow: 5px 5px 3px #CCC;
+    box-shadow: 3px 3px 3px #ddd;
     margin: .7em;
     padding: 1.5em;
 }
 
 .stat-item {
-    min-height: 140px;
-    flex-basis: 1;
+    flex-basis: 13em; /* 10 characters + left+right padding */
+    min-height: 90px;
 }
 
-.stat {
+.stat-item p > span {
     font-weight: 800;
     color: var(--c-dark);
     font-size: 2.3em;
@@ -95,44 +94,35 @@ a:hover { color: var(--c-accent) }
 }
 
 @keyframes fade {
-    0%, 50% {
-      opacity: 0;
-    }
-    100%{
-      opacity: 1;
-  }
-}
-
-.line {
-    stroke-width: 3;
-}
-
-.axis path, .axis line {
-    shape-rendering: crispEdges;
-}
-
-.axis text {
-    font-size: 14px;
+    0%, 50% { opacity: 0 }
+    100% { opacity: 1 }
 }
 
 /* line / scatter plot */
 
+.scatter-plot .scatter-circle {
+    stroke: var(--c-dark);
+    stroke-width: 2;
+}
 
-.y-axis line {
+.scatter-plot .line {
+    stroke-width: 3;
+}
+
+.scatter-plot .y-axis line {
     stroke: var(--c-dark);
     shape-rendering: crispEdges;
 }
 
-.y-axis path {
+.scatter-plot .y-axis path {
     stroke: var(--c-dark);
 }
 
-.y-axis text {
+.scatter-plot .y-axis text {
     fill: var(--c-dark);
-    font-size: 12px;
 }
 
-.tooltip {
+.scatter-plot .tooltip {
     position: absolute;
     opacity: 0;
     pointer-events: none;
@@ -143,162 +133,89 @@ a:hover { color: var(--c-accent) }
 .tooltip p {
     margin: 0;
 }
-
   
   /* bar */
 
-#bar {
+.bar-chart {
     fill: var(--c-dark);
+    
 }
 
-#bar text {
-    font-size: 12px;
-    fill: var(--c-dark);
-}
-
-#bar line#limit {
+.bar-chart line#limit {
     stroke: var(--c-accent);
-    stroke-width: 1;
-    stroke-dasharray: 3 6;
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
 }
 
-.grid path {
-    stroke-width: 0;
+.bar-chart path {
+    stroke: var(--c-dark);
 }
 
-.grid .tick line {
-    stroke: var(--c-light);
-    stroke-opacity: 0.8;
+.grid path, .grid .tick line {
+    stroke: none;
 }
 
-#bar text.divergence {
-    font-size: 14px;
+.bar-chart text.divergence {
     fill: var(--c-light);
 }
 
-#bar text.value {
-    font-size: 14px;
-    fill: var(--c-light);
-}
-
-
-text.label {
-    font-size: 14px;
-    font-weight: 400;
-}
 /* pie */
 
-
-text.percentage {
+.pie-chart .percentage {
     font-size: 1.9em;
     text-anchor: middle;
 }
 
-text.weekday {
+.pie-chart text.weekday {
     font-size: 1.1em;
     text-anchor: middle;
 }
+
+/* dataset info */ 
 
 .data {
     margin: .6em 1.2em;
 }
 
-.scatter-plot { flex-basis: 45% }
-.bar-chart { flex-basis: 25% }
-.pie-chart { flex-basis: 25% }
 
-@media only screen and (max-width: 480px) { /* mobile devices */
-    body {
-        font-size: .7em;
-    }
-
+@media only screen and (max-width: 1200px) { 
     .container {
         width: 100%;
     }
 
-    .stats-container {
-        border: 0px solid silver;
-    }
-
     .stat-item {
-        flex-basis: 35%;
-        min-height: 80px;
+        flex-basis: 9.1em; /* 10 characters + left+right padding *.7 */  
     }
 
-    .stat-item .stat {
+    .stats-container, .chart-container {
+        padding: 5px 5px 0 5px;
+    }
+
+    .item {
+        margin: 5px;
+        padding: 10px 14px;
+    }
+
+    .stat-item p > span {
         font-size: 1.3em;
     }
 
-    .chart-container {
+    .scatter-plot .y-axis text {
+        font-size: 30px;
+    }
+
+    .scatter-plot { order: 1}
+    .bar-chart { order: 2 }
+    .pie-chart { order: 3}
+    
+
+    #scatter {
         width: 100%;
-        border: 0px solid silver;
-        justify-content: stretch;
-        align-items: stretch;
-        align-content: stretch;
-
+        height: calc(50vw - 10px);
     }
 
-    #scatter { /* svg */
+    #bar, #pie {
         width: 100%;
-        height: 40vw;
-    }
-
-    #bar {
-        width: 100%;
-        height: 80vw;
-    }
-
-    #pie {
-        width: 100%;
-        height: 80vw;
-    }
-
-    .scatter-plot { order: 1; flex-basis: 100% }
-    .bar-chart { order: 2; flex-basis: 100% }
-    .pie-chart { order: 3; flex-basis: 100% }
-}
-
-@media only screen and (max-width: 1500px) { /* tablets + */
-    body {
-        font-size: .85em;
-    }
-
-    .container {
-        width: 100%;
-    }
-
-    .stats-container {
-        border: 0px solid silver;
-    }
-
-    .stat-item {
-        min-height: 100px;
-        min-width: 28%;
-    }
-    .stat-item .stat {
-        font-size: 1.3em;
-    }
-
-    .chart-container {
-        width: 100%;
-        border: 0px solid silver;
-    }
-
-    #scatter { /* svg */
-        width: 100%;
-        height: 40vw;
-    }
-
-    #bar {
-        width: 100%;
-        height: 40vw;
-    }
-
-    #pie {
-        width: 100%;
-        height: 40vw;
-    }
-    .scatter-plot { order: 1; flex-basis: 100% }
-    .bar-chart { order: 2; flex-basis: 30% }
-    .pie-chart { order: 3; flex-basis: 30% }
+        height: calc(100vw - 10px);
+    }    
 }

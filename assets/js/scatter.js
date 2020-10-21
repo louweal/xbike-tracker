@@ -16,7 +16,7 @@ function createScatter(width, height) {
 
 function drawScatter(data) {
     var scatter = d3.select("#scatter");
-    var padding = 30; 
+    var padding = 35; 
     var width = +scatter.attr("width")
     var height = +scatter.attr("height")
 
@@ -62,6 +62,8 @@ function drawScatter(data) {
         .attr("fill", d => setScatterColor(data, d.speed))
         .on("mousemove", showScatterTooltip)
         .on("mouseout", hideScatterTooltip)
+        .on("touchstart", showScatterTooltip)
+        .on("touchend", hideScatterTooltip)
         .transition()
         .delay((d,i) => 100*i)
         .duration(100)

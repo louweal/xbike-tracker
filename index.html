@@ -6,10 +6,9 @@
     <meta charset="UTF-8">
     <meta name="description" content="">
     <meta name="author" content="Loes">
+    <meta name="description" content="D3 dashboard showing exercise bike data.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--<link rel="icon" type="image/png" href="assets/img/favicon_16x16.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="assets/img/favicon_32x32.png" sizes="32x32"> -->
     <link rel="icon" type="image/png" href="assets/img/favicon_96x96.png" sizes="96x96">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -18,82 +17,83 @@
 
 <body>
   <div class="wrapper">
+    <div class="container">
+      <div id="nav">
+        <h1>XBike Tracker</h1>
+      </div>
 
-      <div class="container">
-        <div id="nav">
-          <h1>XBike Tracker</h1>
+      <section class="stats-container">
+        <div class="today item stat-item">
+          <h2>Today</h2>
+          <p class="alternate">
+            <span class="stat alternate1" id="today-distance"></span>
+            <span class="stat alternate2" id="today-speed"></span>
+          </p>
+        </div>
+        <div class="this-month item stat-item">
+          <h2>This month</h2>
+          <p class="alternate">
+            <span class="stat alternate1" id="month-distance"></span>
+            <span class="stat alternate2" id="month-speed"></span>
+          </p>
+        </div>
+        <div class="total-dist item stat-item">
+          <h2>All time</h2>
+          <p class="alternate">
+            <span class="stat alternate1" id="total-distance"></span>
+            <span class="stat alternate2" id="average-speed"></span>
+          </p>        
+        </div>
+        <div class="item stat-item">
+          <h2>Total time</h2>
+          <p class="stat"><span id="total-time"></span></p>
+        </div>
+        <div class="longest-dist item stat-item">
+          <h2>Longest distance</h2>
+          <p class="stat"><span id="longest-distance"></span></p>
+        </div>      
+
+        <div class="pr item stat-item">
+          <h2>Best speed</h2>
+          <p class="stat"><span id="max-speed"></span></p>
+        </div>
+      </section>
+      
+      <section class="chart-container">
+        <div class="bar-chart graph item">
+          <h2>Monthly distances (KM)</h2>
+          <svg 
+            version="1.1"
+            baseProfile="full"
+            xmlns="http://www.w3.org/2000/svg" 
+            id="bar">
+          </svg>
         </div>
 
-        <section class="stats-container">
-          <div class="today item stat-item">
-            <h2>Today</h2>
-            <div class="alternate">
-              <p class="stat alternate1" id="today-distance"></p>
-              <p class="stat alternate2" id="today-speed"></p>
-            </div>
-          </div>
-          <div class="this-month item stat-item">
-            <h2>This month</h2>
-            <div class="alternate">
-              <p class="stat alternate1" id="month-distance"></p>
-              <p class="stat alternate2" id="month-speed"></p>
-            </div>
-          </div>
-          <div class="total-dist item stat-item">
-            <h2>All time</h2>
-            <div class="alternate">
-              <p class="stat alternate1" id="total-distance"></p>
-              <p class="stat alternate2" id="average-speed"></p>
-            </div>        
-          </div>
-          <div class="item stat-item">
-            <h2>Total exercise time</h2>
-            <p class="stat" id="total-time"></p>
-          </div>
-          <div class="longest-dist item stat-item">
-            <h2>Longest distance</h2>
-            <p class="stat" id="longest-distance"></p>
-          </div>      
-
-          <div class="pr item stat-item">
-            <h2>Best speed</h2>
-            <p class="stat" id="max-speed"></p>
-          </div>
-        </section>
-        <section class="chart-container">
-          <div class="bar-chart graph item">
-            <h2>Monthly distances (KM)</h2>
-            <svg 
-              version="1.1"
-              baseProfile="full"
-              xmlns="http://www.w3.org/2000/svg" 
-              id="bar">
-            </svg>
-          </div>
-
-          <div class="scatter-plot graph item">
-            <h2>Speed per exercise (km/h)</h2>
-            <svg
-              version="1.1"
-              baseProfile="full"
-              xmlns="http://www.w3.org/2000/svg" 
-              id="scatter">
-            </svg>
-          </div>
-          <div class="pie-chart graph item">
-            <h2>Distance per day of week (%)</h2>
-            <svg 
-              version="1.1"
-              baseProfile="full"
-              xmlns="http://www.w3.org/2000/svg" 
-              id="pie">
-            </svg>
-          </div>
-        </section>
+        <div class="scatter-plot graph item">
+          <h2>Speed per exercise (km/h)</h2>
+          <svg
+            version="1.1"
+            baseProfile="full"
+            xmlns="http://www.w3.org/2000/svg" 
+            id="scatter">
+          </svg>
+        </div>
+        <div class="pie-chart graph item">
+          <h2>Distance per day of week (%)</h2>
+          <svg 
+            version="1.1"
+            baseProfile="full"
+            xmlns="http://www.w3.org/2000/svg" 
+            id="pie">
+          </svg>
+        </div>
+      </section>
     </div>
   </div>
+
   <div class="data">
-    <p>Data source: <a href="data/exercise_data.csv" download>exercise_data.csv</a> (Last modified on <span class="last-modified"></span>)</p>
+    <p>Data: <a href="data/exercise_data.csv" download>exercise_data.csv</a> (Last modified: <span class="last-modified"></span>)</p>
   </div> 
 
   <div class="tooltip"></div>

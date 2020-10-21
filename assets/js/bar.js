@@ -8,7 +8,7 @@ function drawBar(width, height, data) {
       .attr("height", height)
       .attr("viewBox", `0 0 ${width} ${height}`);
     
-  const margin = 30;
+  const margin = 32;
   width = width - 2 * margin;
   height = height - 2 * margin;
 
@@ -24,9 +24,10 @@ function drawBar(width, height, data) {
     .range([height, 0])
     .domain([0, maxDistance + 10]);
 
+    
   const makeYLines = () => d3.axisLeft()
     .scale(yScale)
-
+  
     
   chart.append('g')
     .attr('transform', `translate(0, ${height})`)
@@ -35,12 +36,14 @@ function drawBar(width, height, data) {
   chart.append('g')
     .call(d3.axisLeft(yScale));
 
+  
   chart.append('g')
     .attr('class', 'grid')
     .call(makeYLines()
       .tickSize(-width, 0, 0)
       .tickFormat('')
-    )
+      .tickSizeOuter(0)
+    ) 
 
   const barGroups = chart.selectAll()
     .data(data)
