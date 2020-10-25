@@ -52,7 +52,7 @@ d3.csv(dataFile, function(row, i, headers) {
     d3.select("#month-distance").text(monthDistance + " km");
     d3.select("#month-speed").text(monthSpeed + " km/h");
 
-    var totalDistance = d3.sum(data, d => d.distance)
+    var totalDistance = parseFloat(d3.sum(data, d => d.distance)).toFixed(2);
     d3.select("#total-distance").text(totalDistance + " km");
 
     var totalTime = parseFloat((d3.sum(data, d => d.duration) / 60)).toFixed(1);
