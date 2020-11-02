@@ -48,7 +48,10 @@ d3.csv(dataFile, function(row, i, headers) {
 
     var monthData = data.filter(d => (d.date.getMonth() === today.getMonth()) & (d.date.getYear() === today.getYear()));
     var monthDistance = d3.sum(monthData, d => d.distance);
-    var monthSpeed = parseFloat(d3.mean(monthData, d => d.speed)).toFixed(2);
+    var monthSpeed = 0;
+    if(monthDistance !== 0) {
+      monthSpeed = parseFloat(d3.mean(monthData, d => d.speed)).toFixed(2);
+    }
     d3.select("#month-distance").text(monthDistance + " km");
     d3.select("#month-speed").text(monthSpeed + " km/h");
 
